@@ -1,0 +1,381 @@
+body {
+  font-family: "Verdana", "Arial";
+  background-image: url('../hud/parchment.jpg');
+  padding: 0px;
+  margin: 0px;
+}
+
+.main-panel {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.main-panel img {
+	width: 360px;
+	height: 270px;
+	margin: 10px;
+}
+
+.main-button {
+	box-shadow: 0px 0px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.main-button-label {
+	opacity: 0;
+	background: rgba(0, 0, 0, 0.7);
+    transition: .5s ease;
+    position: relative;
+    top: -65px;
+	left: 10px;
+	text-align: center;
+	width: 340px; /* */ 
+	height: 35px;
+	margin-bottom: -60px;
+	padding: 10px;
+	font-size: 30px;
+	color: white;
+    /*transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%)*/
+}
+
+.main-button-container {
+	height: auto;
+	width: auto;
+}
+.main-button-container:hover .main-button-label {
+	opacity: 1;
+}
+
+
+.popup {
+  z-index: 9;
+  /*background-color: #f1f1f1;*/
+  background-image: url('../hud/wood3.jpg');
+  border: 1px solid #663300;
+  text-align: left;
+  min-height: 100px;
+  min-width: 400px;
+  max-height: 100%;
+  max-width: 100%;
+  height: 430px;
+  width: 800px;
+}
+
+/*Draggable */
+
+.popup {
+  position: absolute;
+  /*resize: both; !*enable this to css resize*! */
+}
+
+.popup-header {
+  padding: 10px;
+  cursor: move;
+  z-index: 10;
+  background-color: #2196f3;
+  color: #fff;
+  display: flex;
+  background-image: url('../hud/wood.jpg');
+}
+
+.popup-header-title {
+  flex: 1;
+}
+
+.popup-header-buttons {
+	display: flex;
+}
+.popup-header-buttons img {
+  height: 15px;
+  margin: 3px 3px;
+}
+
+.button {
+  cursor: pointer;
+}
+
+/*.button:hover {
+	border: 1px solid gray;
+}
+*/
+
+#top-bar {
+  background-image: url('../hud/wood.jpg');
+  width: 100%;
+  height: auto;
+  padding: 2px;
+  margin: 0 -10px 0 -10px;
+  vertical-align: center;
+  display: flex;
+}
+.top-bar-buttons {
+	margin-right: 10px;
+}
+.separator {
+	flex: 1;
+}
+#top-bar input {
+	height: 40px;
+	background: rgba(0, 0, 0, 0.2);
+	border: 1px solid gray;
+	color: white;
+	font-size: 30px;
+	width: 500px;
+}
+
+#top-bar img {
+	height: 40px;
+	margin: auto;
+	padding-left: 5px;
+}
+.apply_button {
+  color: #fff;
+  background-image: url('../hud/wood.jpg');
+  bottom: 0;
+  right: 0;
+}
+/*Resizable*/
+
+
+.popup .resizer-right {
+  width: 5px;
+  height: 100%;
+  background: transparent;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  cursor: e-resize;
+}
+
+.popup .resizer-bottom {
+  width: 100%;
+  height: 5px;
+  background: transparent;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  cursor: s-resize;
+}
+
+.popup .resizer-bottom-right {
+  width: 5px;
+  height: 5px;
+  background: transparent;
+  z-index: 10;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  cursor: se-resize;
+}
+
+.popup_content {
+  padding: 5px;
+  height: calc(100% - 60px);
+}
+/*NOSELECT*/
+
+.popup * {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
+.overview {
+  height: 100%;
+}
+
+.overview-search {
+	width: 98%;
+}
+.overview-content {
+  overflow: auto;
+  height: 100%;
+  /*display: flex;
+  flex-direction: column;*/
+}
+
+.overview-entry {
+	margin: auto;
+	display: flex;
+	border: 1px;
+	height: 30px;
+}
+
+.overview-entry-info {
+	flex: 1;
+	padding: 5px;
+}
+
+.overview-entry-options img {
+	height: 25px;
+	border: 1px;
+	margin: 2px;
+}
+
+input,textarea {
+	/*background: transparent;*/
+	color: inherit;
+	background-color: rgba(0, 0, 0, 0.05);
+}
+
+
+.detail {
+	display: flex;
+	flex-direction: column;
+	/*background: #f00;*/
+	overflow: auto;
+	height: 100%;
+	padding: 5px;
+}
+
+.detail-oneliner {
+	display: flex;
+	/*background: #0f0;*/
+	flex-direction: row;
+}
+
+input[type=color] {
+	opacity: 0.2
+}
+.colored input {
+	opacity: 1;
+}
+.colored img {
+	opacity: 0.3;
+}
+
+.detail-oneliner input[type=text] {
+	width: 97%;
+}
+
+.detail-twoliner {
+	/*background: #00f;*/
+	display: flex;
+	flex-direction: column;
+}
+.detail-twoliner textarea {
+	width: 98%;
+}
+
+.detail-key {
+	flex: 0.4;
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+.detail-value {
+	flex: 1;
+	padding-left: 0;
+}
+
+.detail-value .button {
+	height: 20px;
+}
+
+.detail-links {
+	width: 99%;
+	background-color: rgba(0, 0, 0, 0.05);
+	display: flex;
+	flex-direction: row;
+	overflow-x: auto;
+	height: 100%;
+	min-height: 200px;
+	border-top: 1px solid gray;
+	border-left: 1px solid gray;
+	border-bottom: 1px solid white;
+	border-right: 1px solid white;
+}
+
+.detail-link {
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	/*background: #f30;*/
+	width: 200px;
+	border-right: 1px solid gray;
+}
+.detail-link-header {
+	display: flex;
+	flex-direction: row;
+	height: 25px;
+	width: 100%;
+	background-color: rgba(0, 0, 0, 0.15);
+}
+.detail-link-title {
+	flex: 1;
+	margin: auto;
+	padding-left: 5px;
+}
+.detail-link-button {
+	height: 70%;
+	margin: auto 5px auto 5px;
+}
+.detail-link-content {
+	overflow: auto;
+	height: 100%;
+}
+.linker {
+	/*background: #00f;*/
+	display: flex;
+	flex-direction: column;
+	overflow-y: auto;
+	height: 100%;
+	padding: 5px;
+}
+.linker-entry {
+	height: auto;
+	display: flex;
+	flex-direction: row;
+	/*background: #33f;*/
+	width: 100%;
+	margin: 2px 0 2px 0;
+}
+.linker-entry-title {
+	flex: 1;
+	margin: auto;
+}
+.linker-entry-comment {
+	flex: 1;
+}
+
+.detail-link-entry {
+	padding: 5px 5px;
+}
+.detail-link-entry:hover {
+	background-color: rgba(1, 1, 1, 0.25);
+}
+
+.detail-twoliner .detail-key {
+	border-top: 1px solid gray;
+	border-left: 1px solid gray;
+	border-bottom: 1px solid white;
+	border-right: 1px solid white;
+	background: rgba(0, 0, 0, 0.1);
+	width: 98%;
+	padding: 2px;
+}
+.collapsed .detail-key {
+	border-top: 1px solid white;
+	border-left: 1px solid white;
+	border-bottom: 1px solid gray;
+	border-right: 1px solid gray;
+	background: rgba(1, 1, 1, 0.1);
+}
+.collapsed .detail-value {
+	display: none;
+}
+/*#popups {
+	position: absolute;
+}*/
+
+#campaign_name {
+	padding-left: 10px;
+}
+

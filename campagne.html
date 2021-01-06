@@ -1,0 +1,901 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<script src="js/io.js"></script>
+		<script src="js/popup.js"></script>
+		<script src="js/show.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/style.css" >
+		
+		<!-- TEMPLATES -->
+
+		<template id='template_popup'>
+			<div class="popup">
+				<div class="popup-header">
+					<div class="popup-header-title"></div>
+					<div class="popup-header-buttons">
+						<img class="button popup-header-add" src="hud/add.png" />
+						<a target="_blank"><img class="button popup-header-image" src="hud/image.jpg" /></a>
+						<img class="button popup-header-apply" src="hud/ok.png" />
+						<img class="button popup-header-close" src="hud/close.png" />
+					</div>
+				</div>
+				<div class="popup_content"></div>
+			</div>
+		</template>
+		<template id='template_overview'>
+			<div class="overview">
+				<input type="text" placeholder="Hledat" class="overview-search">
+				<div class="overview-content-header"></div>
+				<div class="overview-content"></div>
+			</div>
+		</template>
+
+		<template id='template_overview_entry'>
+			<div class="overview-entry"> 
+				<div class="overview-entry-info"></div>
+				<div class="overview-entry-options">
+					<img class="button overview-entry-detail" src="hud/edit.png" />
+					<img class="button overview-entry-delete" src="hud/bin.png" />
+				</div>
+			</div>
+		</template>
+
+		<!-- detail template template :)
+
+		<template id='template_detail_X'>
+			<div class="detail detail_X">
+				<div class="detail-oneliner"><div class="detail-key">Kód</div><div class="detail-value X_code"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">X</div><div class="detail-value"><input type="text" class="X_X"></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>X</div><div class="detail-value"><textarea class="X_X" rows=5></textarea></div></div>
+				<div class="detail-links">
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">X</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes X_X" value=''>
+						<input type="hidden" class="detail-link-rev" value="X_X">
+						<div class="detail-link-content"></div>
+					</div>
+				</div>
+			</div>
+		</template>
+
+		-->
+		<template id='template_detail_Z'>
+			<div class="detail detail_Z">
+				<div class="detail-oneliner"><div class="detail-key">Kód</div><div class="detail-value Z_code"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Název</div><div class="detail-value"><input type="text" class="Z_name"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Barva</div><div class="detail-value"><input type="color" class="Z_color" oninput=set_color(this) ><img class="button" src="hud/close.png" onclick=reset_color(this) /></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this) onclick=toggle_collapse(this)>Politický status</div><div class="detail-value"><textarea class="Z_regime" rows=5></textarea></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Geografie</div><div class="detail-value"><textarea class="Z_geography" rows=5></textarea></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Prostředí</div><div class="detail-value"><textarea class="Z_environment" rows=5></textarea></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Historie</div><div class="detail-value"><textarea class="Z_history" rows=5></textarea></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Poznámka</div><div class="detail-value"><textarea class="Z_note" rows=5></textarea></div></div>
+				<div class="detail-links">
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Vztahy</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes Z_politics" value=''>
+						<input type="hidden" class="detail-link-rev" value="Z_politics">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Lokace</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes Z_locations" value=''>
+						<input type="hidden" class="detail-link-rev" value="L_nations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Vztahy s frakcemi</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes Z_fractions" value=''>
+						<input type="hidden" class="detail-link-rev" value="F_nations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Klíčové osoby</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes Z_persons" value=''>
+						<input type="hidden" class="detail-link-rev" value="O_nations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související úkoly</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes Z_quests" value=''>
+						<input type="hidden" class="detail-link-rev" value="U_nations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související informace</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes Z_informations" value=''>
+						<input type="hidden" class="detail-link-rev" value="I_nations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Souvisí s hráči</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes Z_players" value=''>
+						<input type="hidden" class="detail-link-rev" value="H_nations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Navštíveno v sezení</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes Z_sessions" value=''>
+						<input type="hidden" class="detail-link-rev" value="S_nations">
+						<div class="detail-link-content"></div>
+					</div>
+				</div>
+			</div>
+		</template>
+
+		<template id='template_detail_L'>
+			<div class="detail detail_L">
+				<div class="detail-oneliner"><div class="detail-key">Kód</div><div class="detail-value L_code"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Název</div><div class="detail-value"><input type="text" class="L_name"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Barva</div><div class="detail-value"><input type="color" class="L_color" oninput=set_color(this) ><img class="button" src="hud/close.png" onclick=reset_color(this) /></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Typ</div><div class="detail-value"><input type="text" class="L_type"></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Poznámka</div><div class="detail-value"><textarea class="L_note" rows=5></textarea></div></div>
+				<div class="detail-links">
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Země</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes L_nations" value=''>
+						<input type="hidden" class="detail-link-rev" value="Z_locations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související lokace</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes L_locations" value=''>
+						<input type="hidden" class="detail-link-rev" value="L_locations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Působící frakce</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes L_fractions" value=''>
+						<input type="hidden" class="detail-link-rev" value="F_locations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Klíčové osoby</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes L_persons" value=''>
+						<input type="hidden" class="detail-link-rev" value="O_locations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související úkoly</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes L_quests" value=''>
+						<input type="hidden" class="detail-link-rev" value="U_locations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související informace</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes L_informations" value=''>
+						<input type="hidden" class="detail-link-rev" value="I_locations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Souvisí s hráči</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes L_players" value=''>
+						<input type="hidden" class="detail-link-rev" value="H_locations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Navštíveno v sezení</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes L_sessions" value=''>
+						<input type="hidden" class="detail-link-rev" value="S_locations">
+						<div class="detail-link-content"></div>
+					</div>
+				</div>
+			</div>
+		</template>
+
+		<template id='template_detail_F'>
+			<div class="detail detail_F">
+				<div class="detail-oneliner"><div class="detail-key">Kód</div><div class="detail-value F_code"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Název</div><div class="detail-value"><input type="text" class="F_name"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Barva</div><div class="detail-value"><input type="color" class="F_color" oninput=set_color(this) ><img class="button" src="hud/close.png" onclick=reset_color(this) /></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Typ</div><div class="detail-value"><input type="text" class="F_type"></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Poznámka</div><div class="detail-value"><textarea class="F_note" rows=5></textarea></div></div>
+				<div class="detail-links">
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související země</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes F_nations" value=''>
+						<input type="hidden" class="detail-link-rev" value="Z_fractions">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související lokace</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes F_locations" value=''>
+						<input type="hidden" class="detail-link-rev" value="L_fractions">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Vztahy s frakcemi</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes F_fractions" value=''>
+						<input type="hidden" class="detail-link-rev" value="F_fractions">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Klíčové osoby</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes F_persons" value=''>
+						<input type="hidden" class="detail-link-rev" value="O_fractions">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související úkoly</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes F_quests" value=''>
+						<input type="hidden" class="detail-link-rev" value="U_fractions">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související informace</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes F_informations" value=''>
+						<input type="hidden" class="detail-link-rev" value="I_fractions">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Souvisí s hráči</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes F_players" value=''>
+						<input type="hidden" class="detail-link-rev" value="H_fractions">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Setkání v sezení</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes F_sessions" value=''>
+						<input type="hidden" class="detail-link-rev" value="S_fractions">
+						<div class="detail-link-content"></div>
+					</div>
+				</div>
+			</div>
+		</template>
+		
+		<template id='template_detail_O'>
+			<div class="detail detail_O">
+				<div class="detail-oneliner"><div class="detail-key">Kód</div><div class="detail-value O_code"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Jméno</div><div class="detail-value"><input type="text" class="O_name"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Barva</div><div class="detail-value"><input type="color" class="O_color" oninput=set_color(this) ><img class="button" src="hud/close.png" onclick=reset_color(this) /></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Osobní informace</div><div class="detail-value"><input type="text" class="O_personal_info"></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Vzhled</div><div class="detail-value"><textarea class="O_appearance" rows=5></textarea></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Osobnost</div><div class="detail-value"><textarea class="O_personality" rows=5></textarea></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Schopnosti</div><div class="detail-value"><textarea class="O_skills" rows=5></textarea></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Poznámka</div><div class="detail-value"><textarea class="O_note" rows=5></textarea></div></div>
+				<div class="detail-links">
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související země</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes O_nations" value=''>
+						<input type="hidden" class="detail-link-rev" value="Z_persons">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související lokace</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes O_locations" value=''>
+						<input type="hidden" class="detail-link-rev" value="L_persons">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Frakce</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes O_fractions" value=''>
+						<input type="hidden" class="detail-link-rev" value="F_persons">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Vztahy</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes O_persons" value=''>
+						<input type="hidden" class="detail-link-rev" value="O_persons">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související úkoly</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes O_quests" value=''>
+						<input type="hidden" class="detail-link-rev" value="U_persons">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Dialogy</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes O_dialogues" value=''>
+						<input type="hidden" class="detail-link-rev" value="D_persons">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související informace</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes O_informations" value=''>
+						<input type="hidden" class="detail-link-rev" value="I_persons">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Vztahy s hráči</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes O_players" value=''>
+						<input type="hidden" class="detail-link-rev" value="H_persons">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Setkání v sezení</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes O_sessions" value=''>
+						<input type="hidden" class="detail-link-rev" value="S_persons">
+						<div class="detail-link-content"></div>
+					</div>
+				</div>
+			</div>
+		</template>
+
+		<template id='template_detail_U'>
+			<div class="detail detail_U">
+				<div class="detail-oneliner"><div class="detail-key">Kód</div><div class="detail-value U_code"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Název</div><div class="detail-value"><input type="text" class="U_name"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Barva</div><div class="detail-value"><input type="color" class="U_color" oninput=set_color(this) ><img class="button" src="hud/close.png" onclick=reset_color(this) /></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Stav</div><div class="detail-value"><input type="text" class="U_state"></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Odměna</div><div class="detail-value"><textarea class="U_reward" rows=5></textarea></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Detail</div><div class="detail-value"><textarea class="U_detail" rows=5></textarea></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Poznámka</div><div class="detail-value"><textarea class="U_note" rows=5></textarea></div></div>
+				<div class="detail-links">
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související země</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes U_nations" value=''>
+						<input type="hidden" class="detail-link-rev" value="Z_quests">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související lokace</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes U_locations" value=''>
+						<input type="hidden" class="detail-link-rev" value="L_quests">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související frakce</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes U_fractions" value=''>
+						<input type="hidden" class="detail-link-rev" value="F_quests">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související osoby</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes U_persons" value=''>
+						<input type="hidden" class="detail-link-rev" value="O_quests">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související úkoly</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes U_quests" value=''>
+						<input type="hidden" class="detail-link-rev" value="U_quests">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související dialogy</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes U_dialogues" value=''>
+						<input type="hidden" class="detail-link-rev" value="D_quests">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Podmínky</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes U_conditions" value=''>
+						<input type="hidden" class="detail-link-rev" value="P_quests">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Informace</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes U_informations" value=''>
+						<input type="hidden" class="detail-link-rev" value="I_quests">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Řešeno v sezení</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes U_sessions" value=''>
+						<input type="hidden" class="detail-link-rev" value="S_quests">
+						<div class="detail-link-content"></div>
+					</div>
+				</div>
+			</div>
+		</template>
+
+		<template id='template_detail_D'>
+			<div class="detail detail_D">
+				<div class="detail-oneliner"><div class="detail-key">Kód</div><div class="detail-value D_code"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Označení</div><div class="detail-value"><input type="text" class="D_name"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Barva</div><div class="detail-value"><input type="color" class="D_color" oninput=set_color(this) ><img class="button" src="hud/close.png" onclick=reset_color(this) /></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Text</div><div class="detail-value"><textarea class="D_text" rows=5></textarea></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Poznámka</div><div class="detail-value"><textarea class="D_note" rows=5></textarea></div></div>
+				<div class="detail-links">
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Osoby</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes D_persons" value=''>
+						<input type="hidden" class="detail-link-rev" value="O_dialogues">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Úkoly</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes D_quests" value=''>
+						<input type="hidden" class="detail-link-rev" value="U_dialogues">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Podmínky</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes D_conditions" value=''>
+						<input type="hidden" class="detail-link-rev" value="P_dialogues">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Informace</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes D_informations" value=''>
+						<input type="hidden" class="detail-link-rev" value="I_dialogues">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Použito v sezení</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes D_sessions" value=''>
+						<input type="hidden" class="detail-link-rev" value="S_dialogues">
+						<div class="detail-link-content"></div>
+					</div>
+				</div>
+			</div>
+		</template>
+		
+		<template id='template_detail_P'>
+			<div class="detail detail_P">
+				<div class="detail-oneliner"><div class="detail-key">Kód</div><div class="detail-value P_code"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Označení</div><div class="detail-value"><input type="text" class="P_name"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Barva</div><div class="detail-value"><input type="color" class="P_color" oninput=set_color(this) ><img class="button" src="hud/close.png" onclick=reset_color(this) /></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Stav</div><div class="detail-value"><input type="text" class="P_state"></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Poznámka</div><div class="detail-value"><textarea class="P_note" rows=5></textarea></div></div>
+				<div class="detail-links">
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související úkoly</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes P_quests" value=''>
+						<input type="hidden" class="detail-link-rev" value="U_conditions">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související dialogy</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes P_dialogues" value=''>
+						<input type="hidden" class="detail-link-rev" value="D_conditions">
+						<div class="detail-link-content"></div>
+					</div>
+				</div>
+			</div>
+		</template>
+
+		<template id='template_detail_I'>
+			<div class="detail detail_I">
+				<div class="detail-oneliner"><div class="detail-key">Kód</div><div class="detail-value I_code"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Výrok</div><div class="detail-value"><input type="text" class="I_name"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Barva</div><div class="detail-value"><input type="color" class="I_color" oninput=set_color(this) ><img class="button" src="hud/close.png" onclick=reset_color(this) /></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Pravda</div><div class="detail-value"><input type="text" class="I_truth"></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Poznámka</div><div class="detail-value"><textarea class="I_note" rows=5></textarea></div></div>
+				<div class="detail-links">
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související země</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes I_nations" value=''>
+						<input type="hidden" class="detail-link-rev" value="Z_informations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související lokace</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes I_locations" value=''>
+						<input type="hidden" class="detail-link-rev" value="L_informations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související frakce</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes I_fractions" value=''>
+						<input type="hidden" class="detail-link-rev" value="F_informations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související osoby</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes I_persons" value=''>
+						<input type="hidden" class="detail-link-rev" value="O_informations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související úkoly</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes I_quests" value=''>
+						<input type="hidden" class="detail-link-rev" value="U_informations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související dialogy</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes I_dialogues" value=''>
+						<input type="hidden" class="detail-link-rev" value="D_informations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související informace</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes I_informations" value=''>
+						<input type="hidden" class="detail-link-rev" value="I_informations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Kdo zná?</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes I_players" value=''>
+						<input type="hidden" class="detail-link-rev" value="H_informations">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Odhaleno v sezení</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes I_sessions" value=''>
+						<input type="hidden" class="detail-link-rev" value="S_informations">
+						<div class="detail-link-content"></div>
+					</div>
+				</div>
+			</div>
+		</template>
+
+		<template id='template_detail_H'>
+			<div class="detail detail_H">
+				<div class="detail-oneliner"><div class="detail-key">Kód</div><div class="detail-value H_code"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Jméno</div><div class="detail-value"><input type="text" class="H_name"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Barva</div><div class="detail-value"><input type="color" class="H_color" oninput=set_color(this) ><img class="button" src="hud/close.png" onclick=reset_color(this) /></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Osobní informace</div><div class="detail-value"><input type="text" class="H_personal_info"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Povolání</div><div class="detail-value"><input type="text" class="H_class"></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Atributy</div><div class="detail-value"><textarea class="H_attributes" rows=5></textarea></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Zbraně</div><div class="detail-value"><textarea class="H_weapons" rows=5></textarea></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Předměty</div><div class="detail-value"><textarea class="H_items" rows=5></textarea></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Schopnosti a dovednosti</div><div class="detail-value"><textarea class="H_skills" rows=5></textarea></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Jazyky</div><div class="detail-value"><textarea class="H_languages" rows=5></textarea></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Efekty</div><div class="detail-value"><textarea class="H_effects" rows=5></textarea></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Historie</div><div class="detail-value"><textarea class="H_history" rows=5></textarea></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Poznámka</div><div class="detail-value"><textarea class="S_note" rows=5></textarea></div></div>
+				<div class="detail-links">
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související země</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes H_nations" value=''>
+						<input type="hidden" class="detail-link-rev" value="Z_players">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související lokace</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes H_locations" value=''>
+						<input type="hidden" class="detail-link-rev" value="L_players">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Související frakce</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes H_fractions" value=''>
+						<input type="hidden" class="detail-link-rev" value="F_players">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Vztahy s osobami</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes H_persons" value=''>
+						<input type="hidden" class="detail-link-rev" value="O_players">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Zná informace</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes H_informations" value=''>
+						<input type="hidden" class="detail-link-rev" value="I_players">
+						<div class="detail-link-content"></div>
+					</div>
+				</div>
+			</div>
+		</template>
+
+		<template id='template_detail_S'>
+			<div class="detail detail_S">
+				<div class="detail-oneliner"><div class="detail-key">Kód</div><div class="detail-value S_code"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Označení</div><div class="detail-value"><input type="text" class="S_name"></div></div>
+				<div class="detail-oneliner"><div class="detail-key">Barva</div><div class="detail-value"><input type="color" class="S_color" oninput=set_color(this) ><img class="button" src="hud/close.png" onclick=reset_color(this) /></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Průběh hry</div><div class="detail-value"><textarea class="S_gameplay" rows=5></textarea></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Zkušenosti</div><div class="detail-value"><textarea class="S_experience" rows=5></textarea></div></div>
+				<div class="detail-twoliner collapsed"><div class="detail-key" onclick=toggle_collapse(this)>Poznámka</div><div class="detail-value"><textarea class="S_note" rows=5></textarea></div></div>
+				<div class="detail-links">
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Navštívené země</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes S_nations" value=''>
+						<input type="hidden" class="detail-link-rev" value="Z_sessions">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Navštívené lokace</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes S_locations" value=''>
+						<input type="hidden" class="detail-link-rev" value="L_sessions">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Použité frakce</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes S_fractions" value=''>
+						<input type="hidden" class="detail-link-rev" value="F_sessions">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Použité osoby</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes S_persons" value=''>
+						<input type="hidden" class="detail-link-rev" value="O_sessions">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Řešené úkoly</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes S_quests" value=''>
+						<input type="hidden" class="detail-link-rev" value="U_sessions">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Použité dialogy</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes S_dialogues" value=''>
+						<input type="hidden" class="detail-link-rev" value="D_sessions">
+						<div class="detail-link-content"></div>
+					</div>
+					<div class="detail-link">
+						<div class="detail-link-header">
+							<div class="detail-link-title">Odhalené informace</div>
+							<img class="button detail-link-button" src="hud/edit.png">
+						</div>
+						<input type="hidden" class="detail-link-codes S_informations" value=''>
+						<input type="hidden" class="detail-link-rev" value="I_sessions">
+						<div class="detail-link-content"></div>
+					</div>
+				</div>
+			</div>
+		</template>
+
+
+
+		<template id='template_linker'>
+			<div class="linker">
+				
+			</div>
+		</template>
+		
+		<template id='template_linker_entry'>
+			<div class="linker-entry">
+				<input type='checkbox' class='linker-entry-checkbox'>
+				<div class='linker-entry-title'></div>
+				<input type='text' class='linker-entry-comment' placeholder="'hlavní město', 'otec--syn'...">
+			</div>
+		</template>
+
+
+
+
+
+
+
+
+		<!-- END OF TEMPLATES -->
+
+	</head>
+	<body onload="refresh()">
+		<script>
+			// prepare data, attempt to load last campaign from localStorage
+			var data = {};
+			try{
+				load(show_loaded=false);
+			}
+			catch (err){
+				new_campaign(noprompt=true);
+			}
+
+			// load html templates
+
+		</script>
+		<div id="top-bar">
+			<input id="campaign_name" type="text" placeholder='Název kampaně' oninput=campaign_name_change() >
+			<div class='separator'></div>
+			<div class="top-bar-buttons">
+				<img class="button" src="hud/save.png" onclick=export_json(data) />
+				<img class="button" src="hud/new.png" onclick=new_campaign() />
+				<img class="button" src="hud/import.png" onclick=import_campaign() />
+			</div>
+		</div>
+		<div id='popups'></div>
+		<div class="main-panel">
+			<div class="main-button-container"><a onclick="get_overview('Z')"><img class="button main-button" src="hud/nations.jpg"><div class="main-button-label">Země</div></a></div>
+			<div class="main-button-container"><a onclick="get_overview('L')"><img class="button main-button" src="hud/locations.jpg"><div class="main-button-label">Lokace</div></a></div>
+			<div class="main-button-container"><a onclick="get_overview('F')"><img class="button main-button" src="hud/fractions.jpg"><div class="main-button-label">Frakce</div></a></div>
+			<div class="main-button-container"><a onclick="get_overview('O')"><img class="button main-button" src="hud/persons.jpg"><div class="main-button-label">Osoby</div></a></div>
+			<div class="main-button-container"><a onclick="get_overview('U')"><img class="button main-button" src="hud/quests.jpg"><div class="main-button-label">Úkoly</div></a></div>
+			<div class="main-button-container"><a onclick="get_overview('D')"><img class="button main-button" src="hud/dialogues.jpg"><div class="main-button-label">Dialogy</div></a></div>
+			<div class="main-button-container"><a onclick="get_overview('P')"><img class="button main-button" src="hud/conditions.jpg"><div class="main-button-label">Podmínky</div></a></div>
+			<div class="main-button-container"><a onclick="get_overview('I')"><img class="button main-button" src="hud/information.jpg"><div class="main-button-label">Informace</div></a></div>
+			<div class="main-button-container"><a onclick="get_overview('H')"><img class="button main-button" src="hud/players.jpg"><div class="main-button-label">Hráči</div></a></div>
+			<!--
+			<div class="main-button-container"><a onclick="get_overview('A')"><img class="button main-button" src="hud/skills.jpg"><div class="main-button-label">Schopnosti</div></a></div>-->
+<div class="main-button-container"><a onclick="get_overview('S')"><img class="button main-button" src="hud/dm.jpg"><div class="main-button-label">Sezení</div></a></div>
+		</div>
+	</body>
+
+
+</html>
+
