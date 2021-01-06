@@ -1,3 +1,5 @@
+var data = {};
+
 var element_dict = {
 	'Z': 'Země',
 	'L': 'Lokace',
@@ -245,7 +247,7 @@ function format_overview_entry(element_type, key)
 function refresh(close_popups=false)
 {
 	// refresh campaign name
-	document.getElementById('campaign_name').value = data['campaign'];
+	document.getElementById('campaign_name').value = data['campaign'] || '';
 	
 	if (close_popups){
 		popup_refresh_dict = {};

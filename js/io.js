@@ -9,7 +9,8 @@ function load(show_loaded=true)
 {
 	last = window.localStorage.getItem('campagne_last');
 	data = JSON.parse(window.localStorage.getItem('campagne_'+last));
-	
+	if (data == null)
+		data = {};
 	if(show_loaded)
 		refresh(close_popups=true);
 }

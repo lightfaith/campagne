@@ -54,6 +54,9 @@ U všech záznamů lze navíc specifikovat:
 ## Provázanost
 Jednotlivé záznamy lze vzájemně provázat. To umožňuje zobrazení vazeb v detailu a také možnost rychlého prokliku na související záznam. K vazbám lze připojit krátký komentář, který se u vazby zobrazí (otec). Pro rychlejší zadávání lze vztah hned popsat oboustranně, a to zápisem v podobě otec\-\-syn. Po potvrzení změn se tento zápis automaticky rozdělí na oba směry.
 
+## Spuštění
+Stačí otevřít soubor campagne.html.
+
 ## Ukládání
 Data (kromě obrázků) se při změnách automaticky ukládají do LocalStorage prohlížeče. Při nové návštěvě stránky se tedy zobrazí aktuální verze. Spolehlivější je ovšem změny ukládat ručně kliknutím na ikonu diskety. Data jsou tak (bez obrázků) uložena ve formátu JSON v umístění zvoleném uživatelem.
 
