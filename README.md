@@ -1,6 +1,7 @@
 # Campagne
 Campagne je nástroj k návrhu otevřené kampaně pro RPG hry typu DnD. Umožňuje specifikaci důležitých informací a jejich provázanost.
 
+![Campagne screen](https://github.com/lightfaith/campagne/blob/main/screen1.png?raw=true)
 ## Kategorie
 ### Země
 Tady patří kontinenty (Středozem) nebo menší územní celky (Gondor, Mordor). 
